@@ -17,7 +17,6 @@
             <el-radio :label="1">待审核</el-radio>
             <el-radio :label="2">审核通过</el-radio>
             <el-radio :label="3">审核失败</el-radio>
-            <el-radio :label="4">已删除</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道">
@@ -88,8 +87,18 @@
         <el-table-column prop="pubdate" label="发布时间"> </el-table-column>
         <el-table-column prop="address" label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" circle></el-button>
-            <el-button type="danger" icon="el-icon-delete" circle></el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              circle
+              @click="$router.push('/publish?id=' + scope.row.id.toString())"
+            ></el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              circle
+              @click="onDelete(scope.row.id)"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -100,30 +109,23 @@
       layout="prev, pager, next"
       :total="totalCount"
       background
-      @current-change="onCurrent"
+      @current-change="loadArticle"
       :page-size="pageSize"
       :disabled="tableLoading"
+      :current-page="page"
     />
   </div>
 </template>
 
 <script>
-import { getArticle, getChannel } from "@/api/article.js";
+import { getArticle, getChannel, deleteArticle } from "@/api/article.js";
 export default {
   name: "articleIndex",
   components: {},
   props: {},
   data() {
     return {
-      form: {
-        name: "",
-        region: "",
-        date: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: "",
-      },
+      form: {},
       tableData: [],
       //文章详情
       articleList: [],
@@ -181,6 +183,8 @@ export default {
       },
       //表格加载状态
       tableLoading: false,
+      //当前页码
+      page: 1,
     };
   },
   watch: {},
@@ -204,13 +208,32 @@ export default {
       this.totalCount = res.data.total_count - 50;
       this.tableLoading = false;
     },
-    //分页
-    onCurrent(page) {
-      this.loadArticle(page);
-    },
     async loadChannel() {
       const { data: res } = await getChannel();
       this.channelList = res.data.channels;
+    },
+    //删除文章
+    onDelete(articleId) {
+      this.$confirm("此操作将永久删除该文章, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          //删除文章
+          await deleteArticle(articleId.toString());
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+          this.loadArticle(this.page);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
   },
   created() {

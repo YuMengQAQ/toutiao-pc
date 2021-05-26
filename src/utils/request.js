@@ -1,9 +1,19 @@
 import axios from "axios";
 import { getItem } from "@/utils/storage.js";
+import jsonBig from "json-bigint";
 
 //封装请求模块
 const request = axios.create({
   baseURL: "http://api-toutiao-web.itheima.net",
+  transformResponse: [
+    (data) => {
+      try {
+        return jsonBig.parse(data);
+      } catch (error) {
+        return data;
+      }
+    },
+  ],
 });
 
 // 请求拦截器

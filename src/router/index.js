@@ -20,6 +20,11 @@ const routes = [
         name: "article",
         component: () => import("@/views/Article/"),
       },
+      {
+        path: "/publish",
+        name: "publish",
+        component: () => import("@/views/Publish/"),
+      },
     ],
   },
   {
