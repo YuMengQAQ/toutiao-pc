@@ -25,6 +25,21 @@ const routes = [
         name: "publish",
         component: () => import("@/views/Publish/"),
       },
+      {
+        path: "/image",
+        name: "image",
+        component: () => import("@/views/Image/"),
+      },
+      {
+        path: "/comment",
+        name: "comment",
+        component: () => import("@/views/Comment/"),
+      },
+      {
+        path: "/settings",
+        name: "setting",
+        component: () => import("@/views/Setting/"),
+      },
     ],
   },
   {

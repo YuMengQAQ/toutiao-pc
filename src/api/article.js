@@ -1,4 +1,6 @@
 import request from "@/utils/request";
+// 文章相关管理模块
+
 //获取文章列表
 export const getArticle = (params) => {
   return request({
