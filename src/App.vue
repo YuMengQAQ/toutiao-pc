@@ -4,4 +4,8 @@
   </div>
 </template>
 
-<style lang="less"></style>
+<style lang="less">
+body {
+  font-size: 16px;
+}
+</style>

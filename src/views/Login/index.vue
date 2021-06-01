@@ -1,5 +1,6 @@
 <template>
   <div class="login-container">
+    <!-- 表单验证 -->
     <el-form :model="user" class="login-form" ref="userRef" :rules="userRule">
       <el-form-item prop="mobile">
         <el-input
@@ -47,7 +48,9 @@ export default {
         code: "246810",
         agree: false,
       },
+      //登录加载状态
       loginLoading: false,
+      //表单验证规则
       userRule: {
         mobile: [
           { required: true, message: "请输入手机号", trigger: "change" },
@@ -100,6 +103,7 @@ export default {
           message: "登录成功",
           type: "success",
         });
+        //存储user到本地中
         setItem("user", res.data);
         this.$router.push({
           name: "home",

@@ -33,16 +33,43 @@
             height="400px"
             placeholder="请输入文章内容"
           />
+          <!-- 封面选择 -->
         </el-form-item>
         <el-form-item label="封面">
+          <!-- 单选框 -->
           <el-radio-group v-model="article.cover.type">
             <el-radio :label="1">单面</el-radio>
             <el-radio :label="3">三面</el-radio>
             <el-radio :label="0">无图</el-radio>
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
+          <template v-if="article.cover.type > 0">
+            <div class="upload-file">
+              <!-- 上传图片组件 -->
+              <!-- <upload-file
+                v-for="(file, index) in article.cover.type"
+                :key="index"
+                @update-url="updateUrl(index, $event)"
+                :coverImage="article.cover.images[index]"
+              ></upload-file> -->
+              <upload-file
+                v-for="(file, index) in article.cover.type"
+                :key="index"
+                v-model="article.cover.images[index]"
+              ></upload-file>
+            </div>
+          </template>
+        </el-form-item>
+        <!-- 警告提醒 -->
+        <el-form-item v-if="article.cover.type > 0">
+          <el-alert
+            title="点击上面选择框上传图片，注意：三图必须上传三个图片"
+            type="warning"
+          >
+          </el-alert>
         </el-form-item>
         <el-form-item label="频道" prop="channel_id">
+          <!-- 频道选择框 -->
           <el-select v-model="article.channel_id" placeholder="请选择频道">
             <el-option
               :label="channel.name"
@@ -53,6 +80,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
+          <!-- 确认按钮 -->
           <el-button type="primary" @click="onPublish(false)">{{
             $route.query.id ? "确定" : "发布"
           }}</el-button>
@@ -95,10 +123,12 @@ import {
 // import element-tiptap 样式
 import "element-tiptap/lib/index.css";
 import { getImgUrl } from "@/api/image.js";
+import UploadFile from "./components/upload-file.vue";
 export default {
   name: "publishIndex",
   components: {
     "el-tiptap": ElementTiptap,
+    UploadFile,
   },
   props: {},
   data() {
@@ -107,7 +137,7 @@ export default {
         title: "", //文章标题
         content: "", //文章内容
         cover: {
-          type: 0, //封面类型-1:自动，0-无图，1-1张，3-3张
+          type: 1, //封面类型-1:自动，0-无图，1-1张，3-3张
           images: [],
         },
         channel_id: null, //文章所属频道id
@@ -219,6 +249,10 @@ export default {
       const { data: res } = await getAssignArticle(this.$route.query.id);
       this.article = res.data;
     },
+    //从子组件发射过来的事件接受上传的url
+    updateUrl(index, url) {
+      this.article.cover.images[index] = url;
+    },
   },
   created() {
     this.loadChannel();
@@ -229,4 +263,8 @@ export default {
   mounted() {},
 };
 </script>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.upload-file {
+  display: flex;
+}
+</style>

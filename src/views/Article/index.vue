@@ -11,6 +11,7 @@
       <!-- 数据筛选 -->
       <el-form ref="form" :model="form" label-width="40px" size="mini">
         <el-form-item label="状态">
+          <!-- 单选框 -->
           <el-radio-group v-model="status">
             <el-radio :label="null">全部</el-radio>
             <el-radio :label="0">草稿</el-radio>
@@ -20,6 +21,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道">
+          <!-- 选择框 -->
           <el-select v-model="channelId" placeholder="请选择频道">
             <el-option label="全部" :value="null"></el-option>
             <el-option
@@ -31,6 +33,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="日期">
+          <!-- 日期选择器 -->
           <el-date-picker
             v-model="rangeDate"
             type="daterange"

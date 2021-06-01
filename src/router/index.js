@@ -40,6 +40,11 @@ const routes = [
         name: "setting",
         component: () => import("@/views/Setting/"),
       },
+      {
+        path: "/fans",
+        name: "fans",
+        component: () => import("@/views/Fans/"),
+      },
     ],
   },
   {

@@ -7,13 +7,17 @@
     <el-container>
       <!-- 主体头部 -->
       <el-header class="header">
+        <!-- 左侧折叠按钮 -->
         <div class="left-wrap">
           <i
             :class="isCollapse ? 'el-icon-s-fold' : 'el-icon-s-unfold'"
             @click="isCollapse = !isCollapse"
           ></i>
-          <span>德云社</span>
+          <span>{{
+            isCollapse ? "点击左侧按钮展开" : "点击左侧图标收起"
+          }}</span>
         </div>
+        <!-- 右侧下拉菜单 -->
         <el-dropdown>
           <div class="avatar">
             <img :src="user.photo" alt="" />
@@ -21,7 +25,9 @@
             <i class="el-icon-arrow-down el-icon--right"></i>
           </div>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>设置</el-dropdown-item>
+            <el-dropdown-item @click.native="$router.push('/settings')"
+              >设置</el-dropdown-item
+            >
             <el-dropdown-item @click.native="onloginOut">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -38,19 +44,21 @@
 import Aside from "./components/aside.vue";
 import { getUserInfo } from "@/api/user.js";
 import { setItem } from "@/utils/storage.js";
+import globalBus from "@/utils/global-bus";
 export default {
   name: "layoutIndex",
   components: { Aside },
   props: {},
   data() {
     return {
-      user: {},
+      user: {}, //用户数据
       isCollapse: false, //控制菜单折叠状态
     };
   },
   watch: {},
   computed: {},
   methods: {
+    //获取用户信息
     async getUserInfo() {
       const { data: res } = await getUserInfo();
       this.user = res.data;
@@ -69,7 +77,7 @@ export default {
           setItem("user", null);
           this.$message({
             type: "success",
-            message: "成功!",
+            message: "退出成功!",
           });
         })
         .catch(() => {
@@ -83,7 +91,16 @@ export default {
   created() {
     this.getUserInfo();
   },
-  mounted() {},
+  mounted() {
+    //更新名字
+    globalBus.$on("updateName", (name) => {
+      this.user.name = name;
+    });
+    //更新图片
+    globalBus.$on("updateImg", (img) => {
+      this.user.photo = img;
+    });
+  },
 };
 </script>
 <style lang="less" scoped>

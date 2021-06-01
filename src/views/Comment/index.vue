@@ -28,6 +28,7 @@
         </el-table-column>
         <el-table-column prop="address" label="操作">
           <template slot-scope="scope">
+            <!-- 开关按钮 -->
             <el-switch
               v-model="scope.row.comment_status"
               active-color="#13ce66"
@@ -107,6 +108,7 @@ export default {
       });
       this.totalCount = res.data.total_count;
       const results = res.data.results;
+      //添加一个statusLoading开关加载状态,默认设置false,为了防止点击很多次发送多次请求
       results.forEach((result) => {
         result.statusLoading = false;
       });
@@ -114,6 +116,7 @@ export default {
       this.loading = false;
     },
     async onStatusChange(scope) {
+      //开启开关加载状态,并禁用点击
       scope.statusLoading = true;
       await updateComment(
         { article_id: scope.id.toString() },
@@ -123,6 +126,7 @@ export default {
         message: scope.comment_status ? "开启成功" : "关闭成功",
         type: "success",
       });
+      //关闭加载状态
       scope.statusLoading = false;
     },
     //根据每页大小进行分页

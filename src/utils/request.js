@@ -1,6 +1,9 @@
 import axios from "axios";
 import { getItem } from "@/utils/storage.js";
 import jsonBig from "json-bigint";
+import router from "@/router";
+import { removeItem } from "./storage";
+import { Message } from "element-ui";
 
 //封装请求模块
 const request = axios.create({
@@ -41,6 +44,22 @@ request.interceptors.response.use(
   },
   function(error) {
     // 对响应错误做点什么
+    if (error.response && error.response.status === 401) {
+      //清除本地伪造的user
+      removeItem("user");
+      //跳转到登录页
+      router.push("/login");
+      Message.error("登录状态无效，请重新登录");
+    } else if (error.response.status === 403) {
+      Message.error({
+        type: "warning",
+        message: "没有操作权限",
+      });
+    } else if (error.response.status === 400) {
+      Message.error("请求参数错误");
+    } else if (error.response.status >= 500) {
+      Message.error("服务器内容错误，请稍后再试");
+    }
     return Promise.reject(error);
   }
 );

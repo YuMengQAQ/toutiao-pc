@@ -1,12 +1,14 @@
 <template>
-  <div class="home-container">首页</div>
+  <div class="home-container"><baidu-map></baidu-map></div>
 </template>
 
 <script>
+import BaiduMap from "./components/baidu-map.vue";
 export default {
   name: "homeIndex",
-  components: {},
+  components: { BaiduMap },
   props: {},
+
   data() {
     return {};
   },
