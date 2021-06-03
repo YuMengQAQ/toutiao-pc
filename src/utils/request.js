@@ -4,6 +4,9 @@ import jsonBig from "json-bigint";
 import router from "@/router";
 import { removeItem } from "./storage";
 import { Message } from "element-ui";
+// 导入NProgress包对应的js和css
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 
 //封装请求模块
 const request = axios.create({
@@ -27,6 +30,8 @@ request.interceptors.request.use(
     if (user) {
       config.headers.Authorization = `Bearer ${user.token}`;
     }
+    //加入进度条
+    NProgress.start();
     return config;
   },
   function(error) {
@@ -39,7 +44,8 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   function(response) {
     // 在接收响应做些什么，例如跳转到登录页
-
+    //关闭进度条
+    NProgress.done();
     return response;
   },
   function(error) {

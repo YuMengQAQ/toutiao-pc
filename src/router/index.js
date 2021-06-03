@@ -52,6 +52,10 @@ const routes = [
     name: "login",
     component: () => import("@/views/Login/"),
   },
+  {
+    path: "*",
+    component: () => import("@/views/Error/"),
+  },
 ];
 
 const router = new VueRouter({
@@ -63,13 +67,13 @@ router.beforeEach((to, from, next) => {
     const user = getItem("user");
     if (user) {
       next();
-    } else {
-      next("/login");
-      Message({
-        message: "请先登录哦，亲",
-        type: "warning",
-      });
+      return;
     }
+    next("/login");
+    Message({
+      message: "请先登录哦，亲",
+      type: "info",
+    });
   } else {
     next();
   }
